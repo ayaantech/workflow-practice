@@ -34,6 +34,7 @@ jobs:
           echo "THIS FILE IS CREATED DURING THE WORKFLOW AND DOES NOT EXIST IN THE REPOSITORY" > readme.txt
           echo "Showing the repository after creating the files"
           ls
+        shell: powershell
       - name: Read a file from the workflow-practice repository that we just checked out, and create a temporary folder
         run: |
           echo "Reading a file"
@@ -50,8 +51,9 @@ jobs:
           mv ${{ github.workspace }}\readme.txt ${{ github.workspace }}\created_folder
           echo "After move"
           ls
-          echo "Showing the contents of ${{ github.workspace }}\created_folder
+          echo "Showing the contents of ${{ github.workspace }}\created_folder"
           ls ${{ github.workspace }}\created_folder
+        shell: powershell
   second_parallel_job_1:
     # The type of runner that the job will run on
     runs-on: windows-latest
@@ -66,7 +68,8 @@ jobs:
         run: |
           echo "Are my files still there?"
           ls
-          echo "No, they are not. this is a completely new runner"
+          echo "No, they are not. this is a completely new runner / system!"
+        shell: powershell
   second_parallel_job_2:
       # The type of runner that the job will run on
       runs-on: windows-latest
@@ -81,4 +84,5 @@ jobs:
           run: |
             echo "Are my files still there?"
             ls
-            echo "No, they are not. this is a completely new runner"
+            echo "No, they are not. this is a completely new runner / system!"
+          shell: powershell
