@@ -29,13 +29,27 @@ jobs:
         run: |
           echo "${{ env.greeting_string }}"
         shell: powershell
-      - name: Gather a list of files and use it as an input for the next step
+      - name: Use outputs between steps (get filepath and use it in the next step)
+        id: get-file
         run: |
-          echo "blabla"
+          $file = Get-ChildItem -Path ${{ github.workspace }} -Filter Readme.md -Recurse | %{$_.FullName}
+          echo "::set-output name=filename::$file"
         shell: powershell
-      - name: Calculate the total file size and use it for the third job
+      - name: Use outputs between jobs (calculate size of file and use it in the last job)
+        id: calculate-file-size
         run: |
-          echo "blabla"
+          Function Format-FileSize() {
+          Param ([int]$size)
+          If ($size -gt 1TB) {[string]::Format("{0:0.00} TB", $size / 1TB)}
+          ElseIf ($size -gt 1GB) {[string]::Format("{0:0.00} GB", $size / 1GB)}
+          ElseIf ($size -gt 1MB) {[string]::Format("{0:0.00} MB", $size / 1MB)}
+          ElseIf ($size -gt 1KB) {[string]::Format("{0:0.00} kB", $size / 1KB)}
+          ElseIf ($size -gt 0) {[string]::Format("{0:0.00} B", $size)}
+          Else {""}
+          }
+          $file = "${{ steps.get-file.outputs.filename }}"
+          $size=Format-FileSize((Get-Item $file).length)
+          Write-Host($size)
         shell: powershell
   second_parallel_job:
     name: Second parallel job
