@@ -1,14 +1,14 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Simple workflow
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  #push:
+  #  branches: [ "main" ]
+  #pull_request:
+  #  branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -16,21 +16,50 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  first_job:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
+        name: Checkout the workflow-practice repository
       # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Show checked out files
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          ls
+      - name: Read a file from the workflow-practice repository that we just checked out, and create a temporary folder
+        run: |
+          echo "Reading a file"
+          cat ${{ github.workspace }}\readme.txt
+          echo "Creating a folder"
+          mkdir ${{ github.workspace}}\created_folder
+          echo "Showing the folder that we created"
+          ls ${{ github.workspace }}
+        shell: powershell
+      # Runs a set of commands using the runners shell
+      - name: Move the readme file
+        run: |
+          echo "Before move"
+          ls
+          mv ${{ github.workspace}}\readme.txt ${{ github.workspace }}\created_folder
+          echo "After move"
+          ls
+          echo "Showing the contents of ${{ github.workspace\created_folder }}
+          ls ${{ github.workspace }}\created_folder
+  second_job:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+        name: Checkout the workflow-practice repository
+      # Runs a single command using the runners shell
+      - name: Show checked out files
+        run: |
+          echo "Are my files still there?"
+          ls
+          echo "No, they are not. this is a new runner"
