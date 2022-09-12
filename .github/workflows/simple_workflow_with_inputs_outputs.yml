@@ -20,7 +20,7 @@ env:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   first_parallel_job:
-    name: First parallel job
+    name: Print a greeting and set output variables
     runs-on: windows-latest
     outputs:
       file-size: ${{ steps.calculate-file-size.outputs.file-size }}
@@ -55,7 +55,7 @@ jobs:
           echo "::set-output name=file-size::$size"
         shell: powershell
   second_parallel_job:
-    name: Second parallel job
+    name: Print an alternative greeting
     runs-on: windows-latest
     env:
       greeting_string: 'Hello user ${{ inputs.name }} with email ${{ inputs.email }}. This message is defined in an environment variable BUT ON A JOB LEVEL which _overrides the message provided by top level env_ block'
@@ -67,7 +67,7 @@ jobs:
           echo "${{ env.greeting_string }}"
         shell: powershell
   third_sequential_job:
-   name: Third sequential job
+   name: Use output variables
    runs-on: windows-latest
    needs: [first_parallel_job,second_parallel_job]
    steps:
@@ -75,5 +75,5 @@ jobs:
        name: Checkout the workflow-practice repository
      - name: Print the calculated size from the first job
        run: |
-         echo "Hello ${{ inputs.user }}. This is the file size calculated in the first job: ${{ needs.first_parallel_job.outputs.file-size }}"
+         echo "Hello ${{ inputs.name }}. This is the file size calculated in the first job: ${{ needs.first_parallel_job.outputs.file-size }}"
        shell: powershell
