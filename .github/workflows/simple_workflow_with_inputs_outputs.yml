@@ -57,6 +57,8 @@ jobs:
   second_parallel_job:
     name: Second parallel job
     runs-on: windows-latest
+    env:
+      greeting_string: 'Hello user ${{ inputs.name }} with email ${{ inputs.email }}. This message is defined in an environment variable BUT ON A JOB LEVEL which _overrides the message provided by top level env_ block'
     steps:
       - uses: actions/checkout@v3
         name: Checkout the workflow-practice repository
