@@ -47,14 +47,14 @@ jobs:
         run: |
           echo "${{ env.greeting_string }}"
         shell: powershell
-   third_sequential_job:
-    name: First parallel job
-    runs-on: windows-latest
-    needs: [first_parallel_job,second_parallel_job]
-    steps:
-      - uses: actions/checkout@v3
-        name: Checkout the workflow-practice repository
-      - name: Print the calculated size from the first job
-        run: |
-          echo "Hello ${{ inputs.user }}. This is the file size calculated in the first job: "
-        shell: powershell
+  third_sequential_job:
+   name: Third sequential job
+   runs-on: windows-latest
+   needs: [first_parallel_job,second_parallel_job]
+   steps:
+     - uses: actions/checkout@v3
+       name: Checkout the workflow-practice repository
+     - name: Print the calculated size from the first job
+       run: |
+         echo "Hello ${{ inputs.user }}. This is the file size calculated in the first job: "
+       shell: powershell
