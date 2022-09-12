@@ -16,7 +16,8 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  first_job:
+  first_sequential_job:
+    name: First job running by itself
     # The type of runner that the job will run on
     runs-on: windows-latest
 
@@ -26,8 +27,12 @@ jobs:
       - uses: actions/checkout@v3
         name: Checkout the workflow-practice repository
       # Runs a single command using the runners shell
-      - name: Show checked out files
+      - name: Show checked out files, create a new file
         run: |
+          echo "Showing the repository as-is"
+          ls
+          echo "THIS FILE IS CREATED DURING THE WORKFLOW AND DOES NOT EXIST IN THE REPOSITORY" > readme.txt
+          echo "Showing the repository after creating the files"
           ls
       - name: Read a file from the workflow-practice repository that we just checked out, and create a temporary folder
         run: |
@@ -38,7 +43,6 @@ jobs:
           echo "Showing the folder that we created"
           ls ${{ github.workspace }}
         shell: powershell
-      # Runs a set of commands using the runners shell
       - name: Move the readme file
         run: |
           echo "Before move"
@@ -48,18 +52,31 @@ jobs:
           ls
           echo "Showing the contents of ${{ github.workspace }}\created_folder
           ls ${{ github.workspace }}\created_folder
-  second_job:
+  second_parallel_job_1:
     # The type of runner that the job will run on
     runs-on: windows-latest
-
+    name: The first job that runs in parallel with the other one
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
         name: Checkout the workflow-practice repository
-      # Runs a single command using the runners shell
       - name: Show checked out files
         run: |
           echo "Are my files still there?"
           ls
-          echo "No, they are not. this is a new runner"
+          echo "No, they are not. this is a completely new runner"
+  second_parallel_job_2:
+      # The type of runner that the job will run on
+      runs-on: windows-latest
+      name: The second job that runs in parallel with the other one
+      # Steps represent a sequence of tasks that will be executed as part of the job
+      steps:
+        # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+        - uses: actions/checkout@v3
+          name: Checkout the workflow-practice repository
+        - name: Show checked out files
+          run: |
+            echo "Are my files still there?"
+            ls
+            echo "No, they are not. this is a completely new runner"
